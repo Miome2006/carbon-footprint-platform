@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EcoTrack — Carbon Footprint Awareness Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Firebase SDK -->
+  <script type="module" src="firebase.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- PARTICLES BACKGROUND -->
+  <div class="particles" id="particles"></div>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero-section">
+    <nav class="navbar">
+      <div class="logo">🌍 EcoTrack</div>
+      <div class="nav-links">
+        <a href="#calculator-section">Calculator</a>
+        <a href="#ai-section">AI Coach</a>
+        <a href="#awareness-section">Awareness</a>
+        <a href="#leaderboard-section">Leaderboard</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <div class="hero-badge">🌱 Hack2skill Challenge 2025</div>
+      <h1 class="hero-title">
+        Your Carbon<br/>
+        <span class="gradient-text">Footprint</span><br/>
+        Revealed.
+      </h1>
+      <p class="hero-sub">Measure what you emit. Understand your impact. Take action today.</p>
+
+      <div class="hero-stats">
+        <div class="stat-pill">
+          <span class="stat-num" id="counter-co2">0</span>
+          <span class="stat-label">Tons CO₂ emitted globally today</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">1.5°C</span>
+          <span class="stat-label">Climate target we must not exceed</span>
+        </div>
+        <div class="stat-pill">
+          <span class="stat-num">2030</span>
+          <span class="stat-label">Year to cut emissions by 45%</span>
+        </div>
+      </div>
+
+      <button class="hero-cta" onclick="scrollToCalculator()">
+        Calculate My Footprint
+        <span class="cta-arrow">↓</span>
+      </button>
+    </div>
+
+    <div class="scroll-hint">Scroll to explore ↓</div>
+  </section>
+
+  <!-- CALCULATOR SECTION -->
+  <section class="calculator-section" id="calculator-section">
+    <div class="section-header">
+      <span class="eyebrow">STEP-BY-STEP CALCULATOR</span>
+      <h2>How big is your footprint?</h2>
+      <p>Answer 4 quick sections to find out your annual CO₂ emissions</p>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container">
+      <div class="step-indicators">
+        <div class="step-dot active" id="dot-1">
+          <span>🚗</span>
+          <label>Transport</label>
+        </div>
+        <div class="step-line" id="line-1"></div>
+        <div class="step-dot" id="dot-2">
+          <span>🍽️</span>
+          <label>Food</label>
+        </div>
+        <div class="step-line" id="line-2"></div>
+        <div class="step-dot" id="dot-3">
+          <span>⚡</span>
+          <label>Energy</label>
+        </div>
+        <div class="step-line" id="line-3"></div>
+        <div class="step-dot" id="dot-4">
+          <span>🛍️</span>
+          <label>Shopping</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="calculator-wrapper">
+
+      <!-- STEP 1: TRANSPORT -->
+      <div class="calc-card active" id="step-1">
+        <div class="card-header">
+          <div class="card-icon transport-icon">🚗</div>
+          <div>
+            <h3>Transport</h3>
+            <p>How do you get around?</p>
+          </div>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Car travel per week</label>
+            <div class="input-wrap">
+              <input type="number" id="car_km" placeholder="0" min="0"/>
+              <span class="unit">km</span>
+            </div>
+            <div class="input-hint">Average Indian commuter: 60 km/week</div>
+          </div>
+          <div class="input-group">
+            <label>Flights per year</label>
+            <div class="input-wrap">
+              <input type="number" id="flights" placeholder="0" min="0"/>
+              <span class="unit">flights</span>
+            </div>
+            <div class="input-hint">1 flight ≈ 350 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>Two-wheeler travel per week</label>
+            <div class="input-wrap">
+              <input type="number" id="bike_km" placeholder="0" min="0"/>
+              <span class="unit">km</span>
+            </div>
+            <div class="input-hint">Bike/scooter usage</div>
+          </div>
+          <div class="input-group">
+            <label>Public transport per week</label>
+            <div class="input-wrap">
+              <input type="number" id="public_km" placeholder="0" min="0"/>
+              <span class="unit">km</span>
+            </div>
+            <div class="input-hint">Bus, metro, train</div>
+          </div>
+        </div>
+        <div class="live-preview" id="preview-1">
+          <span class="preview-label">Transport estimate:</span>
+          <span class="preview-value" id="transport-live">0 kg CO₂/year</span>
+        </div>
+        <div class="card-actions">
+          <div></div>
+          <button class="btn-next" onclick="goToStep(2)">Food & Diet <span>→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: FOOD -->
+      <div class="calc-card" id="step-2">
+        <div class="card-header">
+          <div class="card-icon food-icon">🍽️</div>
+          <div>
+            <h3>Food & Diet</h3>
+            <p>What's on your plate?</p>
+          </div>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Beef/Mutton meals per week</label>
+            <div class="input-wrap">
+              <input type="number" id="beef_meals" placeholder="0" min="0"/>
+              <span class="unit">meals</span>
+            </div>
+            <div class="input-hint">1 beef meal ≈ 6.6 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>Chicken/Fish meals per week</label>
+            <div class="input-wrap">
+              <input type="number" id="chicken_meals" placeholder="0" min="0"/>
+              <span class="unit">meals</span>
+            </div>
+            <div class="input-hint">1 chicken meal ≈ 1.3 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>Vegetarian meals per week</label>
+            <div class="input-wrap">
+              <input type="number" id="veg_meals" placeholder="0" min="0"/>
+              <span class="unit">meals</span>
+            </div>
+            <div class="input-hint">1 veg meal ≈ 0.5 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>Food wasted per week</label>
+            <div class="input-wrap">
+              <input type="number" id="food_waste" placeholder="0" min="0"/>
+              <span class="unit">kg</span>
+            </div>
+            <div class="input-hint">Wasted food produces methane</div>
+          </div>
+        </div>
+        <div class="live-preview" id="preview-2">
+          <span class="preview-label">Food estimate:</span>
+          <span class="preview-value" id="food-live">0 kg CO₂/year</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-back" onclick="goToStep(1)"><span>←</span> Transport</button>
+          <button class="btn-next" onclick="goToStep(3)">Energy <span>→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: ENERGY -->
+      <div class="calc-card" id="step-3">
+        <div class="card-header">
+          <div class="card-icon energy-icon">⚡</div>
+          <div>
+            <h3>Home Energy</h3>
+            <p>Power consumption at home</p>
+          </div>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>Monthly electricity bill</label>
+            <div class="input-wrap">
+              <input type="number" id="electricity" placeholder="0" min="0"/>
+              <span class="unit">units</span>
+            </div>
+            <div class="input-hint">Check your MSEB/BSES bill</div>
+          </div>
+          <div class="input-group">
+            <label>LPG cylinders per month</label>
+            <div class="input-wrap">
+              <input type="number" id="lpg" placeholder="0" min="0" step="0.5"/>
+              <span class="unit">cylinders</span>
+            </div>
+            <div class="input-hint">1 cylinder ≈ 14.9 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>AC usage per day</label>
+            <div class="input-wrap">
+              <input type="number" id="ac_hours" placeholder="0" min="0" max="24"/>
+              <span class="unit">hours</span>
+            </div>
+            <div class="input-hint">During summer months</div>
+          </div>
+          <div class="input-group">
+            <label>Do you use solar panels?</label>
+            <div class="toggle-group">
+              <button class="toggle-btn active" id="solar-no" onclick="setSolar(false)">No ❌</button>
+              <button class="toggle-btn" id="solar-yes" onclick="setSolar(true)">Yes ✅</button>
+            </div>
+            <div class="input-hint">Solar reduces your footprint</div>
+          </div>
+        </div>
+        <div class="live-preview" id="preview-3">
+          <span class="preview-label">Energy estimate:</span>
+          <span class="preview-value" id="energy-live">0 kg CO₂/year</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-back" onclick="goToStep(2)"><span>←</span> Food</button>
+          <button class="btn-next" onclick="goToStep(4)">Shopping <span>→</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 4: SHOPPING -->
+      <div class="calc-card" id="step-4">
+        <div class="card-header">
+          <div class="card-icon shop-icon">🛍️</div>
+          <div>
+            <h3>Shopping & Lifestyle</h3>
+            <p>Your consumer choices matter</p>
+          </div>
+        </div>
+        <div class="input-grid">
+          <div class="input-group">
+            <label>New clothing items per month</label>
+            <div class="input-wrap">
+              <input type="number" id="clothes" placeholder="0" min="0"/>
+              <span class="unit">items</span>
+            </div>
+            <div class="input-hint">1 item ≈ 7 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>Electronic devices per year</label>
+            <div class="input-wrap">
+              <input type="number" id="electronics" placeholder="0" min="0"/>
+              <span class="unit">devices</span>
+            </div>
+            <div class="input-hint">1 device ≈ 300 kg CO₂</div>
+          </div>
+          <div class="input-group">
+            <label>Online orders per month</label>
+            <div class="input-wrap">
+              <input type="number" id="online_orders" placeholder="0" min="0"/>
+              <span class="unit">orders</span>
+            </div>
+            <div class="input-hint">Delivery packaging & logistics</div>
+          </div>
+          <div class="input-group">
+            <label>Streaming hours per day</label>
+            <div class="input-wrap">
+              <input type="number" id="streaming" placeholder="0" min="0" max="24"/>
+              <span class="unit">hours</span>
+            </div>
+            <div class="input-hint">Netflix, YouTube, etc.</div>
+          </div>
+        </div>
+        <div class="live-preview" id="preview-4">
+          <span class="preview-label">Shopping estimate:</span>
+          <span class="preview-value" id="shopping-live">0 kg CO₂/year</span>
+        </div>
+        <div class="card-actions">
+          <button class="btn-back" onclick="goToStep(3)"><span>←</span> Energy</button>
+          <button class="btn-calculate" onclick="calculateFootprint()">🌍 Calculate My Footprint</button>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="calc-card results-card" id="results">
+        <div class="results-header">
+          <h3>Your Carbon Footprint</h3>
+          <p>Here's your environmental impact breakdown</p>
+        </div>
+
+        <div class="score-section">
+          <div class="score-circle" id="score-circle">
+            <div class="score-inner">
+              <div class="score-number" id="total-score">0</div>
+              <div class="score-unit">kg CO₂/year</div>
+            </div>
+          </div>
+          <div class="score-info">
+            <div class="rating-badge" id="rating-badge">—</div>
+            <p id="rating-desc"></p>
+            <div class="comparison-bars">
+              <div class="comp-bar">
+                <span>You</span>
+                <div class="bar-track"><div class="bar-fill you-bar" id="you-bar"></div></div>
+                <span id="you-val">0</span>
+              </div>
+              <div class="comp-bar">
+                <span>India avg</span>
+                <div class="bar-track"><div class="bar-fill india-bar" style="width:40%"></div></div>
+                <span>1,900</span>
+              </div>
+              <div class="comp-bar">
+                <span>Global avg</span>
+                <div class="bar-track"><div class="bar-fill global-bar" style="width:100%"></div></div>
+                <span>4,700</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-section">
+          <h4>Breakdown by Category</h4>
+          <div class="chart-wrap">
+            <canvas id="footprintChart"></canvas>
+          </div>
+          <div class="chart-legend" id="chart-legend"></div>
+        </div>
+
+        <div class="trees-section">
+          <div class="trees-card">
+            <div class="trees-icon">🌲</div>
+            <div>
+              <div class="trees-number" id="trees-count">0</div>
+              <div class="trees-label">trees needed per year to offset your footprint</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tips-section" id="tips-section">
+          <h4>💡 Personalized Action Plan</h4>
+          <div class="tips-grid" id="tips-grid"></div>
+        </div>
+
+        <div class="results-actions">
+          <button class="btn-back" onclick="resetForm()">🔄 Recalculate</button>
+          <button class="btn-next" onclick="addToLeaderboard()">📊 Join Leaderboard</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- AI LIFESTYLE ANALYZER SECTION -->
+  <section class="ai-section" id="ai-section">
+    <div class="section-header">
+      <span class="eyebrow">✨ AI-POWERED</span>
+      <h2>Talk to Your AI Eco-Coach</h2>
+      <p>Describe your lifestyle in your own words — get an instant, personalized carbon analysis</p>
+    </div>
+
+    <div class="ai-wrapper">
+      <div class="ai-input-card">
+        <label for="ai-lifestyle-input">Tell me about your daily routine, travel, food habits, or anything else</label>
+        <textarea id="ai-lifestyle-input" placeholder="e.g. I drive to work 20km every day, eat chicken most nights, and recently started using AC for 8 hours daily in summer..."></textarea>
+        <div class="ai-examples">
+          <span>Try:</span>
+          <button class="ai-chip" onclick="useExample(0)">🚗 Daily commuter</button>
+          <button class="ai-chip" onclick="useExample(1)">🌱 Already eco-conscious</button>
+          <button class="ai-chip" onclick="useExample(2)">✈️ Frequent traveler</button>
+        </div>
+        <button class="ai-analyze-btn" onclick="analyzeWithAI()">
+          <span id="ai-btn-text">✨ Analyze My Lifestyle</span>
+        </button>
+      </div>
+
+      <div class="ai-result-card" id="ai-result-card">
+        <div class="ai-placeholder" id="ai-placeholder">
+          <div class="ai-placeholder-icon">🤖</div>
+          <p>Your AI-generated insights will appear here</p>
+        </div>
+        <div class="ai-loading hidden" id="ai-loading">
+          <div class="ai-spinner"></div>
+          <p>Analyzing your lifestyle...</p>
+        </div>
+        <div class="ai-output hidden" id="ai-output"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWARENESS SECTION -->
+  <section class="awareness-section" id="awareness-section">
+    <div class="section-header light">
+      <span class="eyebrow">CLIMATE FACTS</span>
+      <h2>Why Your Actions Matter</h2>
+      <p>The numbers behind the crisis — and the hope</p>
+    </div>
+
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-icon">🌡️</div>
+        <div class="fact-num">1.2°C</div>
+        <div class="fact-title">Already warmed</div>
+        <div class="fact-desc">Earth has warmed 1.2°C since pre-industrial times, causing extreme weather events worldwide.</div>
+      </div>
+      <div class="fact-card highlight">
+        <div class="fact-icon">🌏</div>
+        <div class="fact-num">37B</div>
+        <div class="fact-title">Tons of CO₂ per year</div>
+        <div class="fact-desc">The world emits 37 billion tons of CO₂ every year from human activities.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🌲</div>
+        <div class="fact-num">15B</div>
+        <div class="fact-title">Trees cut every year</div>
+        <div class="fact-desc">15 billion trees are cut annually — while we only plant 5 billion back.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">🐋</div>
+        <div class="fact-num">1M+</div>
+        <div class="fact-title">Species at risk</div>
+        <div class="fact-desc">Over 1 million species face extinction due to climate change and habitat loss.</div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-icon">💧</div>
+        <div class="fact-num">30cm</div>
+        <div class="fact-title">Sea level rise by 2100</div>
+        <div class="fact-desc">Sea levels could rise 30–60cm by 2100, threatening coastal cities including Mumbai.</div>
+      </div>
+      <div class="fact-card highlight">
+        <div class="fact-icon">☀️</div>
+        <div class="fact-num">90%</div>
+        <div class="fact-title">Solar potential unused</div>
+        <div class="fact-desc">India receives enough sunlight to meet its energy needs 10x over — only 10% is harnessed.</div>
+      </div>
+    </div>
+
+    <div class="impact-timeline">
+      <h3>What Your Reduction Achieves</h3>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot green"></div>
+          <div class="t-content">
+            <strong>Save 500 kg CO₂/year</strong>
+            <p>Switch to public transport 3 days/week + reduce 2 meat meals</p>
+          </div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot yellow"></div>
+          <div class="t-content">
+            <strong>Save 1,000 kg CO₂/year</strong>
+            <p>Add solar panels + eat plant-based 50% of the time</p>
+          </div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot orange"></div>
+          <div class="t-content">
+            <strong>Save 2,000 kg CO₂/year</strong>
+            <p>Go vegetarian + electric vehicle + energy-efficient home</p>
+          </div>
+        </div>
+        <div class="t-item">
+          <div class="t-dot red"></div>
+          <div class="t-content">
+            <strong>Carbon Neutral</strong>
+            <p>Zero emissions lifestyle + offset remaining footprint with tree planting</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="leaderboard-section" id="leaderboard-section">
+    <div class="section-header">
+      <span class="eyebrow">COMMUNITY</span>
+      <h2>Eco Leaderboard</h2>
+      <p>See how you compare with other eco-warriors</p>
+    </div>
+    <div class="leaderboard-wrap">
+      <div class="leaderboard-table">
+        <div class="lb-header">
+          <span>Rank</span>
+          <span>Name</span>
+          <span>Footprint</span>
+          <span>Badge</span>
+        </div>
+        <div id="lb-rows"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLEDGE SECTION -->
+  <section class="pledge-section">
+    <div class="pledge-content">
+      <h2>🤝 Take the Eco Pledge</h2>
+      <p>Commit to reducing your footprint and inspire others</p>
+      <div class="pledge-input-row">
+        <input type="text" id="pledge-name" placeholder="Your name"/>
+        <select id="pledge-action">
+          <option>I will use public transport 3x/week</option>
+          <option>I will go meat-free 2 days/week</option>
+          <option>I will switch to LED bulbs at home</option>
+          <option>I will plant 5 trees this year</option>
+          <option>I will reduce online shopping by 50%</option>
+          <option>I will install solar panels</option>
+        </select>
+        <button onclick="addPledge()">Pledge Now 🌱</button>
+      </div>
+      <div class="pledges-list" id="pledges-list"></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-logo">🌍 EcoTrack</div>
+      <p>Built for Hack2skill Challenge 2025 | Carbon Footprint Awareness Platform</p>
+      <p class="footer-sub">Data sourced from IPCC, EPA & India's Ministry of Environment</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
