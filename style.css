@@ -285,7 +285,7 @@ body {
   gap: 8px;
   cursor: pointer;
 }
-.step-dot span {
+.step-dot span:first-child {
   width: 52px; height: 52px;
   background: var(--gray-100);
   border: 2px solid var(--gray-200);
@@ -304,12 +304,12 @@ body {
   cursor: pointer;
   transition: color 0.3s;
 }
-.step-dot.active span {
+.step-dot.active span:first-child {
   background: var(--green-600);
   border-color: var(--green-400);
   box-shadow: 0 0 0 6px rgba(34,160,80,0.2);
 }
-.step-dot.done span {
+.step-dot.done span:first-child {
   background: var(--green-500);
   border-color: var(--green-400);
 }
